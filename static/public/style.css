@@ -1,0 +1,11 @@
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 75px;
+  width: 30%;
+}
+fieldset{
+	margin:auto;
+	text-align: center;
+}

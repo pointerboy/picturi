@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+<link rel="stylesheet" href="/static/public/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Picturi - index</title>
+</head>
+<body>
+  <img class="center" alt="cool_logo" src='/static/logo.png'></img>
+  <form enctype="multipart/form-data" action="/upload" class="pure-form" method="post" name="form">
+    <fieldset>
+        <legend>A simple way to share your memories</legend>
+        <input type="text" name="author" placeholder="Author (optional)">
+        <input type="password" name="password" placeholder="Password (optional)">
+        <br/></br>
+		<input type="file" name="picture">
+		<br/><br/>
+        <input type="submit" class="pure-button pure-button-primary"></button>
+    </fieldset>
+</form>
+ <footer>
+</footer> 
+</body>
+</html>
