@@ -11,6 +11,13 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 PIC_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
 app.config['PIC_FOLDER'] = PIC_FOLDER
 
+def file_exists(path):
+    try:
+        file = open(path, 'r')
+    except IOError:
+        return False
+    return True
+
 @app.route('/')
 def index():
     return render_template("public/index.html")
@@ -18,7 +25,7 @@ def index():
 @app.route('/upload', methods=['POST'])
 def file_upload():
 	picture = request.files['picture'] # We fetch the request (the picture from HTML submited form)
-	picture_file = os.path.join(app.config['PIC_FOLDER'], picture.filename) # We init a real file object and give it a name 
+	picture_file = os.path.join(app.config['PIC_FOLDER'], secure_filename(picture.filename)) # We init a real file object and give it a name 
 	picture.save(picture_file) # We save the file object
 	return render_template("public/index.html")
 @app.route('/library')
@@ -38,9 +45,7 @@ def library_origin():
 def library(source):
     print("attempted to access: " + source)
     # check if exists 
-    try:
-        file = open(PIC_FOLDER+'/'+source, 'r')
-    except IOError:
+    if not file_exists(PIC_FOLDER+'/'+source):
         return "Could not find the picture / picture is damaged"
     return render_template('public/library.html', image_list=source)
  
