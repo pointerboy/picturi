@@ -7,7 +7,8 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-PIC_FOLDER = os.path.basename('/static/uploads')
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+PIC_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
 app.config['PIC_FOLDER'] = PIC_FOLDER
 
 @app.route('/')
@@ -19,7 +20,7 @@ def file_upload():
 	picture = request.files['picture'] # We fetch the request (the picture from HTML submited form)
 	picture_file = os.path.join(app.config['PIC_FOLDER'], picture.filename) # We init a real file object and give it a name 
 	picture.save(picture_file) # We save the file object
-	return render_template("index.html")
+	return render_template("public/index.html")
 @app.route('/library')
 def library_origin():
 	images_count = 0
@@ -35,14 +36,9 @@ def library_origin():
 
 @app.route('/uploads/<source>', methods=['GET', 'POST'])
 def library(source):
-	print("attempted to access: " + source)
-	try:
-		path = "/uploads/" + source
-		print(path)
-		file = open("/uploads/"+ source, 'r')
-	except FileNotFoundError:
-		print(source + " could not be found on the server.")
-	finally:
-		return render_template('public/library.html', image_list=source)
+    print("attempted to access: " + source)
+    file = open(PIC_FOLDER+'/'+source, 'r') 
+    return render_template('public/library.html', image_list=source)
+ 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=4000)
