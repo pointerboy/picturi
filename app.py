@@ -4,12 +4,19 @@
 '''
 import os
 from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 PIC_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
+ALLOWED_EXTE = set(['png', 'jpeg', 'jpg', 'gif'])
+
 app.config['PIC_FOLDER'] = PIC_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTE
 
 def file_exists(path):
     try:
@@ -24,10 +31,18 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def file_upload():
-	picture = request.files['picture'] # We fetch the request (the picture from HTML submited form)
-	picture_file = os.path.join(app.config['PIC_FOLDER'], secure_filename(picture.filename)) # We init a real file object and give it a name 
-	picture.save(picture_file) # We save the file object
-	return render_template("public/index.html")
+    picture = request.files['picture'] 
+    picture_file = os.path.join(app.config['PIC_FOLDER'], picture.filename) 
+    if not file_exists(picture_file):
+        if allowed_file(picture_file):
+            picture.save(picture_file)
+            return render_template("public/index.html")
+        else:
+            # forbbiden file type
+            return "forbbiden file type"
+    else:
+         # file already exists
+         return "already exists"
 @app.route('/library')
 def library_origin():
 	images_count = 0
@@ -50,4 +65,4 @@ def library(source):
     return render_template('public/library.html', image_list=source)
  
 if __name__ == '__main__':
-    app.run(debug=True, port=4001)
+    app.run(debug=True, port=5000)
