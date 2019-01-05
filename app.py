@@ -37,8 +37,12 @@ def library_origin():
 @app.route('/uploads/<source>', methods=['GET', 'POST'])
 def library(source):
     print("attempted to access: " + source)
-    file = open(PIC_FOLDER+'/'+source, 'r') 
+    # check if exists 
+    try:
+        file = open(PIC_FOLDER+'/'+source, 'r')
+    except IOError:
+        return "Could not find the picture / picture is damaged"
     return render_template('public/library.html', image_list=source)
  
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+    app.run(debug=True, port=4001)
