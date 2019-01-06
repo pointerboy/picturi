@@ -8,4 +8,8 @@
 fieldset{
 	margin:auto;
 	text-align: center;
+    background-image: url('/static/bg.png')repeat;
+}
+.bg{
+    background-image: url('/static/bg.png')repeat;
 }
