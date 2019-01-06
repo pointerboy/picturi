@@ -6,6 +6,7 @@ import os
 import sqlite3
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
+from flask import g
 
 app = Flask(__name__)
 
@@ -24,6 +25,7 @@ DATABASE = 'database.db'
 # assign app param (somewhat like os var)
 app.config['PIC_FOLDER'] = PIC_FOLDER
 
+
 # main appliction's functions class
 class application():
     @staticmethod
@@ -38,6 +40,27 @@ class application():
         return True
     def generate_error_page(text):
         return render_template("public/whoopsie.html", error=text)
+
+# non-slave db class
+class database():
+    @staticmethod
+    def get_db():
+        db = getattr(g, '_database', None)
+        if db is None:
+            db = g._database = sqlite3.connect(DATABASE)
+        return db
+
+    @app.teardown_appcontext
+    def close_connection(exception):
+        db = getattr(g, '_database', None)
+        if db is not None:
+            db.close()
+
+    def query_db(query, args=(), one=False):
+        cur = get_db().execute(query, args)
+        rv = cur.fetchall()
+        cur.close()
+        return (rv[0] if rv else None) if one else rv
 
 # app route's:
 
