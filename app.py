@@ -36,6 +36,8 @@ class application():
         except IOError:
              return False
         return True
+    def generate_error_page(text):
+        return render_template("public/whoopsie.html", error=text)
 
 # app route's:
 
@@ -59,10 +61,10 @@ def file_upload():
             return render_template("public/index.html")
         else:
             # forbbiden file type
-            return "forbbiden file type"
+            application.generate_error_page("Forbbiden file type!")
     else:
          # file already exists
-         return "already exists"
+         return application.generate_error_page("File already exists on the server!")
 @app.route('/library')
 def library_origin():
 	images_count = 0
@@ -81,7 +83,7 @@ def library(source):
     print("attempted to access: " + source)
     # check if exists 
     if not appication.file_exists(PIC_FOLDER+'/'+source):
-        return "Could not find the picture / picture is damaged"
+        application.generate_error_page("File doesn't exist or it's damaged")
     return render_template('public/library.html', image_list=source)
  
 if __name__ == '__main__':
