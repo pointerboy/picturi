@@ -3,38 +3,58 @@
     Github origin repository: https://www.github.com/pointerboy/picturi/
 '''
 import os
+import sqlite3
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
+# get app root path 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# assign uploads folder using app root path
 PIC_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
+
+# set allowed extensions list
 ALLOWED_EXTE = set(['png', 'jpeg', 'jpg', 'gif'])
 
+# set database path
+DATABASE = 'database.db'
+
+# assign app param (somewhat like os var)
 app.config['PIC_FOLDER'] = PIC_FOLDER
 
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTE
+# main appliction's functions class
+class application():
+    @staticmethod
+    def allowed_file(filename):
+        return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTE
+    def file_exists(path):
+        try:
+            file = open(path, 'r')
+        except IOError:
+             return False
+        return True
 
-def file_exists(path):
-    try:
-        file = open(path, 'r')
-    except IOError:
-        return False
-    return True
+# app route's:
 
 @app.route('/')
-def index():
+def index_callback():
     return render_template("public/index.html")
 
 @app.route('/upload', methods=['POST'])
 def file_upload():
-    picture = request.files['picture'] 
+    picture = request.files['picture']
+
+    if 'picture' not in request.files:
+        # file is empty
+        return "input empty"
+
     picture_file = os.path.join(app.config['PIC_FOLDER'], picture.filename) 
-    if not file_exists(picture_file):
-        if allowed_file(picture_file):
+    
+    if not application.file_exists(picture_file):
+        if application.allowed_file(picture_file):
             picture.save(picture_file)
             return render_template("public/index.html")
         else:
@@ -60,9 +80,9 @@ def library_origin():
 def library(source):
     print("attempted to access: " + source)
     # check if exists 
-    if not file_exists(PIC_FOLDER+'/'+source):
+    if not appication.file_exists(PIC_FOLDER+'/'+source):
         return "Could not find the picture / picture is damaged"
     return render_template('public/library.html', image_list=source)
  
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)
