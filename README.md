@@ -1,3 +1,6 @@
+# 23/8/2020 NOTE!
+This repository contains a lot of bad examples and principles. I made this when I was starting with Flask, two years ago. I do not recommend using this on a production env. at all costs. As evey other Github user, I tried to commercialize my crappy code by adding "Open Source X" next to it. :)
+
 # picturi - NOT READY FOR PRODUCTION
 Open source image hosting platform written iny Python. Ugh, will be better in future. At this point it has many bugs and isn't stable enough
 but I thought why not upload it to GitHub when I'm already using Git. Feel free to contribute in future.
